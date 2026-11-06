@@ -17,7 +17,7 @@ document.querySelectorAll('[data-slide]').forEach(button => button.addEventListe
 document.querySelectorAll('[data-scroll]').forEach(button => button.addEventListener('click', () => {
   const [id, direction] = button.dataset.scroll.split(':');
   const track = document.getElementById(id);
-  track.scrollBy({left: track.clientWidth * Number(direction) * .8, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
+  track.scrollBy({left: track.clientWidth * Number(direction) * .8, behavior: (matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.motion === 'off') ? 'instant' : 'smooth'});
 }));
 const detailDialog = document.querySelector('#product-dialog');
 const searchDialog = document.querySelector('#search-dialog');
@@ -54,3 +54,4 @@ function renderSearch() {
 document.querySelectorAll('[data-search]').forEach(button => button.addEventListener('click', () => { searchDialog.showModal(); renderSearch(); searchInput.focus(); }));
 searchInput.addEventListener('input', renderSearch);
 document.querySelector('#year').textContent = new Date().getFullYear();
+
