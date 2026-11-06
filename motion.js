@@ -22,6 +22,7 @@
       activeAnimations.clear();
       resets.forEach(reset => reset());
     }
+    document.dispatchEvent(new Event('velodream:motionchange'));
   }
   toggle.addEventListener('click', () => {
     paused = !paused;
@@ -77,14 +78,17 @@
         observer.unobserve(entry.target);
         if (!enabled()) return;
         const animation = entry.target.animate([
-          {opacity: .35, transform: 'translateY(22px)'},
-          {opacity: 1, transform: 'translateY(0)'}
-        ], {duration: 650, easing: 'cubic-bezier(.2,.75,.25,1)'});
+          {opacity: 0, translate: '0 52px', scale: '.96'},
+          {opacity: 1, translate: '0 0', scale: '1'}
+        ], {duration: 1100, delay: Number(entry.target.dataset.revealDelay || 0), fill:'backwards', easing: 'cubic-bezier(.16,1,.3,1)'});
         activeAnimations.add(animation);
         animation.onfinish = () => activeAnimations.delete(animation);
         animation.oncancel = () => activeAnimations.delete(animation);
       });
-    }, {threshold: .12});
-    document.querySelectorAll('.section-heading,.category-grid,.products,.collection-grid,.story>div').forEach(element => observer.observe(element));
+    }, {threshold: .08, rootMargin:'0px 0px -24px 0px'});
+    document.querySelectorAll('.category-grid,.products,.collection-grid').forEach(group => {
+      [...group.children].forEach((element, index) => { element.dataset.revealDelay = String(index * 90); observer.observe(element); });
+    });
+    document.querySelectorAll('.section-heading,.story>div,.story>img,.footer-top,.footer-grid>div').forEach(element => observer.observe(element));
   }
 })();
